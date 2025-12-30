@@ -1,10 +1,27 @@
 const Content = require("../models/Content");
 const { validationResult } = require("express-validator");
+const fs = require("fs");
+const path = require("path");
 
 /**
  * Content Controller
  * Handles all CRUD operations for blog and story content
  */
+
+// Helper function to get full image URL
+const getImageUrl = (filename, req) => {
+  if (!filename) return "";
+  return `/uploads/${filename}`;
+};
+
+// Helper function to delete image file
+const deleteImageFile = (filename) => {
+  if (!filename) return;
+  const filePath = path.join(__dirname, "../uploads", filename);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+};
 
 /**
  * @desc    Create new content (blog or story)
@@ -26,12 +43,22 @@ const createContent = async (req, res) => {
     // Handle file upload if image is provided
     let imageUrl = "";
     if (req.file) {
-      imageUrl = req.file.filename; // Store filename or construct full URL
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    // Handle keywords if sent as string (comma separated)
+    let keywords = req.body.keywords;
+    if (typeof keywords === "string") {
+      keywords = keywords
+        .split(",")
+        .map((k) => k.trim())
+        .filter((k) => k);
     }
 
     // Create content object
     const contentData = {
       ...req.body,
+      keywords: keywords || [],
       image: imageUrl,
     };
 
@@ -48,6 +75,11 @@ const createContent = async (req, res) => {
     });
   } catch (error) {
     console.error("Create content error:", error);
+
+    // Delete uploaded file if there was an error
+    if (req.file) {
+      deleteImageFile(req.file.filename);
+    }
 
     // Handle duplicate slug error
     if (error.code === 11000) {
@@ -176,9 +208,35 @@ const updateContent = async (req, res) => {
 
     const { slug } = req.params;
 
+    // Find existing content to get old image
+    const existingContent = await Content.findOne({ slug });
+    if (!existingContent) {
+      // Delete uploaded file if content not found
+      if (req.file) {
+        deleteImageFile(req.file.filename);
+      }
+      return res.status(404).json({
+        success: false,
+        message: "Content not found",
+      });
+    }
+
     // Handle file upload if new image is provided
     if (req.file) {
-      req.body.image = req.file.filename;
+      // Delete old image file
+      if (existingContent.image) {
+        const oldFilename = existingContent.image.replace("/uploads/", "");
+        deleteImageFile(oldFilename);
+      }
+      req.body.image = `/uploads/${req.file.filename}`;
+    }
+
+    // Handle keywords if sent as string (comma separated)
+    if (typeof req.body.keywords === "string") {
+      req.body.keywords = req.body.keywords
+        .split(",")
+        .map((k) => k.trim())
+        .filter((k) => k);
     }
 
     // Update content
@@ -187,13 +245,6 @@ const updateContent = async (req, res) => {
       runValidators: true, // Run schema validations
     });
 
-    if (!content) {
-      return res.status(404).json({
-        success: false,
-        message: "Content not found",
-      });
-    }
-
     res.status(200).json({
       success: true,
       message: "Content updated successfully",
@@ -201,6 +252,11 @@ const updateContent = async (req, res) => {
     });
   } catch (error) {
     console.error("Update content error:", error);
+
+    // Delete uploaded file if there was an error
+    if (req.file) {
+      deleteImageFile(req.file.filename);
+    }
 
     // Handle duplicate slug error
     if (error.code === 11000) {
@@ -234,6 +290,12 @@ const deleteContent = async (req, res) => {
         success: false,
         message: "Content not found",
       });
+    }
+
+    // Delete associated image file
+    if (content.image) {
+      const filename = content.image.replace("/uploads/", "");
+      deleteImageFile(filename);
     }
 
     res.status(200).json({

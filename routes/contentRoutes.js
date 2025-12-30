@@ -24,7 +24,7 @@ const {
  *     tags:
  *       - Content
  *     summary: Create new content
- *     description: Create new blog, story, or guide content with optional image upload
+ *     description: Create new blog, story, or guide content with optional image upload. Use multipart/form-data for image upload.
  *     requestBody:
  *       required: true
  *       content:
@@ -40,10 +40,66 @@ const {
  *               title:
  *                 type: string
  *                 description: Content title
+ *                 example: "My First Blog Post"
  *               type:
  *                 type: string
  *                 enum: [blog, story, guide]
- *                 description: Content type (blog, story, or guide)
+ *                 description: Content type
+ *                 example: "blog"
+ *               content:
+ *                 type: string
+ *                 description: Content body/text
+ *                 example: "This is the blog content..."
+ *               author:
+ *                 type: string
+ *                 description: Author name
+ *                 example: "John Doe"
+ *               guideLink:
+ *                 type: string
+ *                 description: External guide URL (required only for guide type)
+ *                 example: "https://example.com/guide"
+ *               status:
+ *                 type: string
+ *                 enum: [draft, published, archived]
+ *                 description: Publication status
+ *                 example: "published"
+ *               metaTitle:
+ *                 type: string
+ *                 description: SEO meta title
+ *                 example: "SEO Title"
+ *               metaDescription:
+ *                 type: string
+ *                 description: SEO meta description
+ *                 example: "SEO Description for search engines"
+ *               keywords:
+ *                 type: string
+ *                 description: Comma separated keywords (e.g. blog,nodejs,tutorial)
+ *                 example: "blog,nodejs,tutorial"
+ *               publicationDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Publication date
+ *                 example: "2025-12-30T10:00:00Z"
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file (PNG or JPG, max 5MB)
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - type
+ *               - content
+ *               - author
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Content title
+ *               type:
+ *                 type: string
+ *                 enum: [blog, story, guide]
+ *                 description: Content type
  *               content:
  *                 type: string
  *                 description: Content body/text
@@ -52,30 +108,34 @@ const {
  *                 description: Author name
  *               guideLink:
  *                 type: string
- *                 format: uri
  *                 description: External guide URL (required only for guide type)
  *               status:
  *                 type: string
  *                 enum: [draft, published, archived]
- *                 default: draft
  *               metaTitle:
  *                 type: string
- *                 description: SEO meta title
  *               metaDescription:
  *                 type: string
- *                 description: SEO meta description
  *               keywords:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: SEO keywords
  *               publicationDate:
  *                 type: string
  *                 format: date-time
  *               image:
  *                 type: string
- *                 format: binary
- *                 description: Image file (optional)
+ *                 description: Image URL path
+ *           example:
+ *             title: "My First Blog Post"
+ *             type: "blog"
+ *             content: "This is the blog content with detailed information..."
+ *             author: "John Doe"
+ *             status: "published"
+ *             metaTitle: "SEO Title for Blog"
+ *             metaDescription: "SEO Description for search engines"
+ *             keywords: ["blog", "nodejs", "tutorial"]
+ *             publicationDate: "2025-12-30T10:00:00Z"
  *     responses:
  *       201:
  *         description: Content created successfully

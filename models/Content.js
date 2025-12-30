@@ -39,7 +39,7 @@ const contentSchema = new mongoose.Schema(
     // Publication status
     status: {
       type: String,
-      enum: ["draft", "published"],
+      enum: ["draft", "published", "archived"],
       default: "draft",
     },
 
@@ -53,7 +53,7 @@ const contentSchema = new mongoose.Schema(
     // When content should be/was published
     publicationDate: {
       type: Date,
-      required: [true, "Publication date is required"],
+      default: Date.now,
     },
 
     // Optional featured image

@@ -29,7 +29,37 @@ const {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/PageCreateRequest'
+ *             type: object
+ *             required:
+ *               - pageTitle
+ *             properties:
+ *               pageTitle:
+ *                 type: string
+ *                 description: Page title (required)
+ *               metaTitle:
+ *                 type: string
+ *                 description: SEO meta title
+ *               metaDescription:
+ *                 type: string
+ *                 description: SEO meta description
+ *               keywords:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: SEO keywords
+ *               googleAnalyticsId:
+ *                 type: string
+ *                 description: Google Analytics ID (format G-XXXXXXXXXX)
+ *               metaPixelCode:
+ *                 type: string
+ *                 description: Facebook Pixel code (numbers only)
+ *           example:
+ *             pageTitle: "About Us"
+ *             metaTitle: "About Our Company - CMS"
+ *             metaDescription: "Learn more about our company and team"
+ *             keywords: ["about", "company", "team"]
+ *             googleAnalyticsId: "G-XXXXXXXXXX"
+ *             metaPixelCode: "1234567890"
  *     responses:
  *       201:
  *         description: Page created successfully
