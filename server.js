@@ -32,6 +32,22 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Swagger UI route
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Root route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to CMS Backend API",
+    version: "1.0.0",
+    documentation: "/api/docs",
+    endpoints: {
+      health: "/api/health",
+      content: "/api/content",
+      pages: "/api/pages",
+      admin: "/api/admin",
+    },
+  });
+});
+
 // API Routes
 app.use("/api/content", contentRoutes);
 app.use("/api/pages", pageRoutes);
