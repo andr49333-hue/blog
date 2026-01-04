@@ -59,8 +59,29 @@ const validateContent = [
 
   body("keywords")
     .optional()
+    .customSanitizer((value) => {
+      // Handle form-data: keywords can come as string (comma-separated or JSON stringified)
+      if (typeof value === "string") {
+        try {
+          // Try to parse as JSON first (in case it's stringified array)
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) {
+            return parsed;
+          }
+        } catch (e) {
+          // If not JSON, treat as comma-separated string
+        }
+        // Split comma-separated string and trim each keyword
+        return value
+          .split(",")
+          .map((k) => k.trim())
+          .filter((k) => k);
+      }
+      // If already an array, return as is
+      return value;
+    })
     .isArray()
-    .withMessage("Keywords must be an array"),
+    .withMessage("Keywords must be an array or comma-separated string"),
 
   body("keywords.*")
     .optional()
@@ -148,8 +169,29 @@ const validateContentUpdate = [
 
   body("keywords")
     .optional()
+    .customSanitizer((value) => {
+      // Handle form-data: keywords can come as string (comma-separated or JSON stringified)
+      if (typeof value === "string") {
+        try {
+          // Try to parse as JSON first (in case it's stringified array)
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) {
+            return parsed;
+          }
+        } catch (e) {
+          // If not JSON, treat as comma-separated string
+        }
+        // Split comma-separated string and trim each keyword
+        return value
+          .split(",")
+          .map((k) => k.trim())
+          .filter((k) => k);
+      }
+      // If already an array, return as is
+      return value;
+    })
     .isArray()
-    .withMessage("Keywords must be an array"),
+    .withMessage("Keywords must be an array or comma-separated string"),
 
   body("keywords.*")
     .optional()

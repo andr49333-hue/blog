@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const bcrypt = require("bcryptjs");
 
 // Load environment variables
 dotenv.config();
@@ -35,16 +34,13 @@ const insertTestData = async () => {
     const adminData = {
       name: "Admin User",
       email: "admin@example.com",
-      password: "password123",
+      password: "password123", // Model will hash this automatically
       role: "super_admin",
       isActive: true,
     };
 
-    const hashedPassword = await bcrypt.hash(adminData.password, 10);
-    const admin = await Admin.create({
-      ...adminData,
-      password: hashedPassword,
-    });
+    // Let the Admin model handle password hashing via pre-save hook
+    const admin = await Admin.create(adminData);
     console.log("✅ Admin Created:", {
       id: admin._id,
       name: admin.name,

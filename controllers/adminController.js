@@ -14,44 +14,55 @@ const { validationResult } = require("express-validator");
  */
 const login = async (req, res) => {
   try {
+    console.log("Login attempt:", req.body);
     const { email, password } = req.body;
 
     // Validate input
     if (!email || !password) {
+      console.log("Missing email or password");
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
       });
     }
 
+    console.log("Searching for admin with email:", email);
     // Find admin by email and explicitly select password
     const admin = await Admin.findOne({ email }).select("+password");
 
     if (!admin) {
+      console.log("Admin not found with email:", email);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
 
+    console.log("Admin found:", admin.email, "isActive:", admin.isActive);
+
     // Check if admin is active
     if (!admin.isActive) {
+      console.log("Admin account is deactivated");
       return res.status(403).json({
         success: false,
         message: "Your account has been deactivated. Contact administrator.",
       });
     }
 
+    console.log("Comparing password...");
     // Verify password
     const isPasswordValid = await admin.comparePassword(password);
+    console.log("Password valid:", isPasswordValid);
 
     if (!isPasswordValid) {
+      console.log("Invalid password for user:", email);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
 
+    console.log("Generating JWT token...");
     // Generate JWT token
     const token = jwt.sign(
       {
@@ -63,6 +74,7 @@ const login = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRE || "7d" }
     );
 
+    console.log("Login successful for:", admin.email);
     // Return token and admin info (without password)
     res.status(200).json({
       success: true,

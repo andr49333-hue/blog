@@ -73,7 +73,7 @@ const {
  *                 example: "SEO Description for search engines"
  *               keywords:
  *                 type: string
- *                 description: Comma separated keywords (e.g. blog,nodejs,tutorial)
+ *                 description: Keywords as comma-separated string (e.g. "blog,nodejs,tutorial") or JSON stringified array (e.g. '["blog","nodejs","tutorial"]'). Will be converted to array automatically.
  *                 example: "blog,nodejs,tutorial"
  *               publicationDate:
  *                 type: string
@@ -303,9 +303,9 @@ router.post("/", handleFileUpload, validateContent, createContent);
  *               metaDescription:
  *                 type: string
  *               keywords:
- *                 type: array
- *                 items:
- *                   type: string
+ *                 type: string
+ *                 description: Keywords as comma-separated string (e.g. "blog,nodejs,tutorial") or JSON stringified array. Will be converted to array automatically.
+ *                 example: "blog,nodejs,tutorial"
  *               publicationDate:
  *                 type: string
  *                 format: date-time

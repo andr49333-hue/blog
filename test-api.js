@@ -9,7 +9,7 @@ const tests = [
     method: "POST",
     path: "/api/admin/login",
     name: "Admin Login",
-    body: { email: "admin@test.com", password: "password123" },
+    body: { email: "admin@example.com", password: "password123" },
   },
   { method: "GET", path: "/api/content", name: "Get Content Items" },
   { method: "GET", path: "/api/pages", name: "Get Pages" },
