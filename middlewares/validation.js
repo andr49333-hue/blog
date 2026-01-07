@@ -276,8 +276,9 @@ const validatePage = [
 
   body("editor_content")
     .optional()
-    .trim()
-    .withMessage("Editor content must be a string"),
+    .isString()
+    .withMessage("Editor content must be a string")
+    .trim(),
 ];
 
 /**
@@ -341,8 +342,9 @@ const validatePageUpdate = [
 
   body("editor_content")
     .optional()
-    .trim()
-    .withMessage("Editor content must be a string"),
+    .isString()
+    .withMessage("Editor content must be a string")
+    .trim(),
 ];
 
 module.exports = {
