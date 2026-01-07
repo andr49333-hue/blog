@@ -273,6 +273,11 @@ const validatePage = [
     .trim()
     .isNumeric()
     .withMessage("Meta Pixel code must contain only numbers"),
+
+  body("editor_content")
+    .optional()
+    .trim()
+    .withMessage("Editor content must be a string"),
 ];
 
 /**
@@ -333,6 +338,11 @@ const validatePageUpdate = [
     .trim()
     .isNumeric()
     .withMessage("Meta Pixel code must contain only numbers"),
+
+  body("editor_content")
+    .optional()
+    .trim()
+    .withMessage("Editor content must be a string"),
 ];
 
 module.exports = {

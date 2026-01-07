@@ -53,6 +53,9 @@ const {
  *               metaPixelCode:
  *                 type: string
  *                 description: Facebook Pixel code (numbers only)
+ *               editor_content:
+ *                 type: string
+ *                 description: Rich text/HTML content for the page (optional)
  *           example:
  *             pageTitle: "About Us"
  *             metaTitle: "About Our Company - CMS"
@@ -60,6 +63,7 @@ const {
  *             keywords: ["about", "company", "team"]
  *             googleAnalyticsId: "G-XXXXXXXXXX"
  *             metaPixelCode: "1234567890"
+ *             editor_content: "<p>This is the page content with rich text formatting...</p>"
  *     responses:
  *       201:
  *         description: Page created successfully

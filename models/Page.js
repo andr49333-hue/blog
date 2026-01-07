@@ -70,6 +70,12 @@ const pageSchema = new mongoose.Schema(
         message: "Meta Pixel code should only contain numbers",
       },
     },
+
+    // Editor content (rich text/HTML content for the page)
+    editor_content: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt

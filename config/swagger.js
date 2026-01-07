@@ -387,6 +387,10 @@ const options = {
               type: "string",
               description: "Facebook Pixel tracking code",
             },
+            editor_content: {
+              type: "string",
+              description: "Rich text/HTML content for the page",
+            },
             createdAt: {
               type: "string",
               format: "date-time",
@@ -433,6 +437,10 @@ const options = {
               type: "string",
               description: "Facebook Pixel code",
             },
+            editor_content: {
+              type: "string",
+              description: "Rich text/HTML content for the page (optional)",
+            },
           },
         },
         PageUpdateRequest: {
@@ -459,6 +467,10 @@ const options = {
             },
             metaPixelCode: {
               type: "string",
+            },
+            editor_content: {
+              type: "string",
+              description: "Rich text/HTML content for the page (optional)",
             },
           },
         },

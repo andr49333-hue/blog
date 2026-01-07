@@ -1,0 +1,930 @@
+{
+	"info": {
+		"_postman_id": "cms-api-collection-2025",
+		"name": "CMS Backend API",
+		"description": "Complete API collection for CMS Backend including Admin, Content, and Pages endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "cms-backend"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Check if the API server is running"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set(\"auth_token\", jsonData.token);",
+									"        console.log(\"Token saved:\", jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"login"
+							]
+						},
+						"description": "Login with admin credentials to get JWT token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Get Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admin/profile",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"profile"
+									]
+								},
+								"description": "Get current authenticated admin's profile"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Admin Name\",\n    \"email\": \"admin@example.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/profile",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"profile"
+									]
+								},
+								"description": "Update current admin's profile (name and email)"
+							},
+							"response": []
+						},
+						{
+							"name": "Change Password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"oldPassword\": \"password123\",\n    \"newPassword\": \"newPassword123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/profile/password",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"profile",
+										"password"
+									]
+								},
+								"description": "Change password for authenticated admin"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CRUD Operations",
+					"item": [
+						{
+							"name": "Create Admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"New Admin\",\n    \"email\": \"newadmin@example.com\",\n    \"password\": \"securePassword123\",\n    \"role\": \"admin\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admins",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admins"
+									]
+								},
+								"description": "Create a new admin (super_admin only)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Admins",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admins?page=1&limit=10&role=&isActive=",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admins"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"description": "Page number"
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Items per page"
+										},
+										{
+											"key": "role",
+											"value": "",
+											"description": "Filter by role (admin, super_admin)",
+											"disabled": true
+										},
+										{
+											"key": "isActive",
+											"value": "",
+											"description": "Filter by active status (true/false)",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Get all admins with pagination and filtering"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Admin By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admins/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admins",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Admin ID (MongoDB ObjectId)"
+										}
+									]
+								},
+								"description": "Get admin by ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Admin Name\",\n    \"email\": \"updated@example.com\",\n    \"role\": \"admin\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admins/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admins",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Admin ID"
+										}
+									]
+								},
+								"description": "Update admin details (super_admin only)"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/admins/:id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admins",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Admin ID"
+										}
+									]
+								},
+								"description": "Soft delete admin (super_admin only)"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Content",
+			"item": [
+				{
+					"name": "Create Content (JSON)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"My First Blog Post\",\n    \"type\": \"blog\",\n    \"content\": \"This is the blog content with detailed information...\",\n    \"author\": \"John Doe\",\n    \"status\": \"published\",\n    \"metaTitle\": \"SEO Title for Blog\",\n    \"metaDescription\": \"SEO Description for search engines\",\n    \"keywords\": [\"blog\", \"nodejs\", \"tutorial\"],\n    \"publicationDate\": \"2025-12-30T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/content",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content"
+							]
+						},
+						"description": "Create new content using JSON (without image)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Content (Form Data)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "My First Blog Post",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "blog",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "This is the blog content with detailed information...",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "published",
+									"type": "text"
+								},
+								{
+									"key": "metaTitle",
+									"value": "SEO Title for Blog",
+									"type": "text"
+								},
+								{
+									"key": "metaDescription",
+									"value": "SEO Description for search engines",
+									"type": "text"
+								},
+								{
+									"key": "keywords",
+									"value": "blog,nodejs,tutorial",
+									"type": "text",
+									"description": "Comma-separated keywords or JSON stringified array"
+								},
+								{
+									"key": "publicationDate",
+									"value": "2025-12-30T10:00:00Z",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"description": "Image file (PNG or JPG, max 5MB)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/content",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content"
+							]
+						},
+						"description": "Create new content with image upload using form-data. Keywords can be sent as comma-separated string."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Content",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/content?type=&status=&author=&page=1&limit=10&sort=-createdAt",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "",
+									"description": "Filter by type (blog, story, guide)",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status (draft, published, archived)",
+									"disabled": true
+								},
+								{
+									"key": "author",
+									"value": "",
+									"description": "Filter by author name",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "sort",
+									"value": "-createdAt",
+									"description": "Sort field (prefix with - for descending)"
+								}
+							]
+						},
+						"description": "Get all content with filtering, pagination, and sorting"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Content By Slug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/content/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Content slug"
+								}
+							]
+						},
+						"description": "Get content by slug"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Content (Form Data)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Updated Blog Post Title",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Updated content...",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "published",
+									"type": "text"
+								},
+								{
+									"key": "keywords",
+									"value": "blog,nodejs,updated",
+									"type": "text",
+									"description": "Comma-separated keywords"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"description": "New image file (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/content/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Content slug"
+								}
+							]
+						},
+						"description": "Update content by slug. Keywords can be sent as comma-separated string."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Content (JSON)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Blog Post Title\",\n    \"content\": \"Updated content...\",\n    \"author\": \"John Doe\",\n    \"status\": \"published\",\n    \"keywords\": [\"blog\", \"nodejs\", \"updated\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/content/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Content slug"
+								}
+							]
+						},
+						"description": "Update content by slug using JSON"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Content",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/content/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"content",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Content slug"
+								}
+							]
+						},
+						"description": "Delete content by slug"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pages",
+			"item": [
+				{
+					"name": "Create Page",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pageTitle\": \"About Us\",\n    \"metaTitle\": \"About Our Company - CMS\",\n    \"metaDescription\": \"Learn more about our company and team\",\n    \"keywords\": [\"about\", \"company\", \"team\"],\n    \"googleAnalyticsId\": \"G-XXXXXXXXXX\",\n    \"metaPixelCode\": \"1234567890\",\n    \"editor_content\": \"<p>This is the page content with rich text formatting...</p>\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pages"
+							]
+						},
+						"description": "Create a new static page"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Pages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pages?page=1&limit=10&sort=-createdAt",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pages"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "sort",
+									"value": "-createdAt",
+									"description": "Sort field (prefix with - for descending)"
+								}
+							]
+						},
+						"description": "Get all pages with pagination and sorting"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Page By Slug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pages/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pages",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Page slug"
+								}
+							]
+						},
+						"description": "Get page by slug"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Page",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pageTitle\": \"Updated About Us\",\n    \"metaTitle\": \"Updated About Our Company\",\n    \"metaDescription\": \"Updated description\",\n    \"keywords\": [\"about\", \"updated\", \"company\"],\n    \"editor_content\": \"<p>Updated page content with rich text formatting...</p>\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pages/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pages",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Page slug"
+								}
+							]
+						},
+						"description": "Update page by slug"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Page",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pages/:slug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pages",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "",
+									"description": "Page slug"
+								}
+							]
+						},
+						"description": "Delete page by slug"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
