@@ -6,6 +6,13 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop cms-backend",
+    "pm2:restart": "pm2 restart cms-backend",
+    "pm2:delete": "pm2 delete cms-backend",
+    "pm2:logs": "pm2 logs cms-backend",
+    "pm2:monit": "pm2 monit",
+    "pm2:status": "pm2 status",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

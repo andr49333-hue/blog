@@ -5,8 +5,10 @@ node_modules/
 dist/
 build/
 *.log
+logs/
 .DS_Store
 .vscode/
 .idea/
 uploads/*
 !uploads/.gitkeep
+.pm2
