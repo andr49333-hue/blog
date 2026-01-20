@@ -15,6 +15,17 @@ const { validationResult } = require("express-validator");
 const login = async (req, res) => {
   try {
     console.log("Login attempt:", req.body);
+
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: errors.array()[0].msg,
+        errors: errors.array(),
+      });
+    }
+
     const { email, password } = req.body;
 
     // Validate input
@@ -109,7 +120,7 @@ const createAdmin = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: "Validation errors",
+        message: errors.array()[0].msg,
         errors: errors.array(),
       });
     }
@@ -254,7 +265,7 @@ const updateAdmin = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: "Validation errors",
+        message: errors.array()[0].msg,
         errors: errors.array(),
       });
     }
@@ -386,7 +397,7 @@ const updateProfile = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: "Validation errors",
+        message: errors.array()[0].msg,
         errors: errors.array(),
       });
     }
@@ -451,7 +462,7 @@ const changePassword = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: "Validation errors",
+        message: errors.array()[0].msg,
         errors: errors.array(),
       });
     }

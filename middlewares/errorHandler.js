@@ -81,12 +81,13 @@ const errorHandler = (error, req, res, next) => {
   // Express-validator errors (should be handled in controllers, but backup)
   if (error.array && typeof error.array === "function") {
     statusCode = 400;
-    message = "Validation errors";
+    const validationErrors = error.array();
+    message = validationErrors.length > 0 ? validationErrors[0].msg : "Validation errors";
 
     return res.status(statusCode).json({
       success: false,
       message,
-      errors: error.array(),
+      errors: validationErrors,
     });
   }
 
