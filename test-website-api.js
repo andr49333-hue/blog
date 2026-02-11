@@ -131,6 +131,37 @@ async function runTests() {
   );
   await testEndpoint("GET", "/api/website/stats", "Get content statistics");
 
+  // Test page endpoints
+  await testEndpoint("GET", "/api/website/pages", "Get all pages");
+  await testEndpoint(
+    "GET",
+    "/api/website/pages?page=1&limit=5",
+    "Get pages with pagination",
+  );
+
+  // Try to get a specific page by slug (if exists)
+  console.log(`\n📝 Testing: Get specific page by slug`);
+  try {
+    const pagesResponse = await axios({
+      method: "GET",
+      url: `${BASE_URL}/api/website/pages`,
+      headers: { "X-API-Key": API_KEY },
+    });
+
+    if (pagesResponse.data.data.length > 0) {
+      const firstPageSlug = pagesResponse.data.data[0].slug;
+      await testEndpoint(
+        "GET",
+        `/api/website/pages/${firstPageSlug}`,
+        `Get page by slug: ${firstPageSlug}`,
+      );
+    } else {
+      console.log(`   ⚠️ No pages found to test slug endpoint`);
+    }
+  } catch (error) {
+    console.log(`   ❌ Error getting pages: ${error.message}`);
+  }
+
   // Test invalid type
   console.log(`\n📝 Testing: Invalid Content Type`);
   try {
