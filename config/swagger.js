@@ -601,12 +601,17 @@ const options = {
         name: "Pages",
         description: "Static page management endpoints",
       },
+      {
+        name: "Website (Public)",
+        description: "Public content endpoints for website (API Key required)",
+      },
     ],
   },
   apis: [
     "./routes/adminRoutes.js",
     "./routes/contentRoutes.js",
     "./routes/pageRoutes.js",
+    "./routes/websiteRoutes.js",
     "./server.js",
   ],
 };

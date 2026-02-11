@@ -11,6 +11,7 @@ const { errorHandler } = require("./middlewares/errorHandler");
 const contentRoutes = require("./routes/contentRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const websiteRoutes = require("./routes/websiteRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -44,6 +45,7 @@ app.get("/", (req, res) => {
       content: "/api/content",
       pages: "/api/pages",
       admin: "/api/admin",
+      website: "/api/website",
     },
   });
 });
@@ -53,6 +55,7 @@ app.use("/api/content", contentRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admins", adminRoutes);
+app.use("/api/website", websiteRoutes);
 
 /**
  * @swagger
@@ -110,7 +113,7 @@ app.listen(PORT, () => {
   console.log(
     `Server running on port ${PORT} in ${
       process.env.NODE_ENV || "development"
-    } mode`
+    } mode`,
   );
 });
 
